@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HARDWOOD HITS — Basketball Card Shop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --court-navy:#0b1229;
+    --court-navy-2:#111a3a;
+    --hardwood:#e8710a;
+    --hardwood-light:#ff9a3c;
+    --holo-pink:#ff2e9f;
+    --holo-cyan:#00e5ff;
+    --holo-purple:#8a3ffc;
+    --gold:#ffd23f;
+    --paper:#f6f3ec;
+    --ink:#0b1229;
+    --line:rgba(246,243,236,0.14);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--court-navy);
+    color:var(--paper);
+    font-family:'Inter',sans-serif;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,.display{
+    font-family:'Anton',sans-serif;
+    font-weight:400;
+    letter-spacing:0.5px;
+    line-height:0.95;
+    margin:0;
+  }
+  a{color:inherit;text-decoration:none;}
+  button{font-family:inherit;cursor:pointer;}
+  ::selection{background:var(--hardwood);color:var(--ink);}
+
+  /* subtle court texture backdrop */
+  .court-bg{
+    position:fixed;inset:0;z-index:-1;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(255,110,10,0.10), transparent 40%),
+      radial-gradient(circle at 85% 75%, rgba(138,63,252,0.14), transparent 45%),
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 80px),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 80px),
+      var(--court-navy);
+  }
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:sticky;top:0;z-index:100;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 5vw;
+    background:rgba(11,18,41,0.78);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .logo{
+    font-family:'Anton',sans-serif;
+    font-size:1.5rem;
+    display:flex;align-items:center;gap:8px;
+  }
+  .logo .ball{
+    display:inline-block;width:22px;height:22px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, var(--hardwood-light), var(--hardwood) 60%, #a34a00 100%);
+    position:relative;
+    animation:bounce 1.8s ease-in-out infinite;
+  }
+  .logo .ball::before,.logo .ball::after{
+    content:"";position:absolute;background:#1a0d00;
+  }
+  .logo .ball::before{top:0;bottom:0;left:50%;width:1.5px;transform:translateX(-50%);}
+  .logo .ball::after{left:0;right:0;top:50%;height:1.5px;transform:translateY(-50%);}
+  @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+  .nav-links{display:flex;gap:28px;font-weight:600;font-size:0.92rem;}
+  .nav-links a{position:relative;padding-bottom:4px;}
+  .nav-links a::after{
+    content:"";position:absolute;left:0;bottom:0;width:0;height:2px;
+    background:var(--hardwood);transition:width .25s ease;
+  }
+  .nav-links a:hover::after{width:100%;}
+
+  .cart-btn{
+    display:flex;align-items:center;gap:8px;
+    background:var(--hardwood);color:var(--ink);
+    border:none;padding:10px 16px;border-radius:999px;
+    font-weight:800;font-size:0.85rem;
+    transition:transform .15s ease, box-shadow .15s ease;
+    box-shadow:0 4px 0 #a34a00;
+  }
+  .cart-btn:active{transform:translateY(3px);box-shadow:0 1px 0 #a34a00;}
+  .cart-count{
+    background:var(--ink);color:var(--gold);
+    border-radius:50%;width:20px;height:20px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:0.72rem;transition:transform .2s ease;
+  }
+  .cart-count.pop{animation:pop .35s ease;}
+  @keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.5)}100%{transform:scale(1)}}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    display:grid;grid-template-columns:1.1fr 0.9fr;
+    align-items:center;gap:40px;
+    padding:80px 5vw 60px;
+    min-height:78vh;
+    position:relative;
+  }
+  .hero-eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    color:var(--hardwood-light);font-weight:700;font-size:0.85rem;
+    margin-bottom:18px;
+  }
+  .hero-eyebrow .dot{width:8px;height:8px;border-radius:50%;background:var(--hardwood);box-shadow:0 0 12px var(--hardwood);animation:pulse 1.4s infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+
+  .hero h1{
+    font-size:clamp(2.8rem,6vw,5.2rem);
+    color:var(--paper);
+  }
+  .hero h1 .grad{
+    background:linear-gradient(90deg,var(--hardwood-light),var(--gold));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .hero p{
+    max-width:46ch;color:rgba(246,243,236,0.72);
+    font-size:1.05rem;line-height:1.6;margin-top:20px;
+  }
+  .hero-ctas{display:flex;gap:16px;margin-top:34px;flex-wrap:wrap;}
+  .btn-primary{
+    background:var(--hardwood);color:var(--ink);border:none;
+    padding:16px 30px;border-radius:10px;font-weight:800;font-size:1rem;
+    box-shadow:0 6px 0 #a34a00;
+    transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .btn-primary:hover{transform:translateY(-2px);}
+  .btn-primary:active{transform:translateY(4px);box-shadow:0 2px 0 #a34a00;}
+  .btn-ghost{
+    background:transparent;color:var(--paper);
+    border:2px solid var(--line);padding:14px 28px;border-radius:10px;
+    font-weight:700;font-size:1rem;transition:border-color .2s ease, background .2s ease;
+  }
+  .btn-ghost:hover{border-color:var(--hardwood-light);background:rgba(255,255,255,0.04);}
+
+  .stat-row{display:flex;gap:34px;margin-top:44px;flex-wrap:wrap;}
+  .stat b{display:block;font-family:'Anton',sans-serif;font-size:1.9rem;color:var(--gold);}
+  .stat span{font-size:0.8rem;color:rgba(246,243,236,0.6);}
+
+  /* HERO CARD (tilt effect) */
+  .card-stage{
+    perspective:1200px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .hero-card{
+    width:290px;height:410px;border-radius:18px;
+    position:relative;transform-style:preserve-3d;
+    transition:transform .1s ease-out;
+    cursor:pointer;
+  }
+  .hero-card-face{
+    position:absolute;inset:0;border-radius:18px;
+    background:
+      linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0) 40%),
+      linear-gradient(160deg, var(--holo-purple), var(--holo-pink) 45%, var(--holo-cyan));
+    box-shadow:0 30px 60px -20px rgba(0,0,0,0.6), 0 0 0 2px rgba(255,255,255,0.15) inset;
+    overflow:hidden;
+    display:flex;flex-direction:column;justify-content:space-between;
+    padding:18px;
+  }
+  .hero-card-face::before{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(115deg, transparent 20%, rgba(255,255,255,0.55) 35%, transparent 50%);
+    background-size:200% 200%;
+    animation:shine 3.2s ease-in-out infinite;
+    mix-blend-mode:overlay;
+  }
+  @keyframes shine{0%{background-position:200% 0}100%{background-position:-50% 100%}}
+  .hero-card-top{display:flex;justify-content:space-between;align-items:flex-start;font-family:'Anton',sans-serif;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,0.4);}
+  .hero-card-top span:last-child{font-size:0.8rem;background:rgba(0,0,0,0.35);padding:4px 10px;border-radius:999px;}
+  .hero-card-mid{
+    flex:1;display:flex;align-items:center;justify-content:center;
+    font-size:6.5rem;filter:drop-shadow(0 10px 20px rgba(0,0,0,0.4));
+  }
+  .hero-card-bottom{color:#fff;}
+  .hero-card-bottom .name{font-family:'Anton',sans-serif;font-size:1.6rem;text-shadow:0 2px 8px rgba(0,0,0,0.4);}
+  .hero-card-bottom .meta{font-size:0.75rem;opacity:0.85;margin-top:2px;}
+  .hero-card-hint{
+    position:absolute;bottom:-38px;left:50%;transform:translateX(-50%);
+    font-size:0.78rem;color:rgba(246,243,236,0.5);white-space:nowrap;
+  }
+
+  section{padding:90px 5vw;}
+  .section-head{max-width:640px;margin:0 auto 50px;text-align:center;}
+  .section-head h2{font-size:clamp(2rem,4.2vw,3rem);}
+  .section-head p{color:rgba(246,243,236,0.65);margin-top:14px;font-size:1.02rem;}
+
+  /* ---------- RARITY STRIP ---------- */
+  .rarity-strip{
+    display:flex;gap:16px;overflow-x:auto;padding-bottom:10px;
+    scroll-snap-type:x mandatory;
+  }
+  .rarity-strip::-webkit-scrollbar{height:6px;}
+  .rarity-strip::-webkit-scrollbar-thumb{background:var(--hardwood);border-radius:3px;}
+  .rarity-chip{
+    scroll-snap-align:start;
+    flex:0 0 200px;padding:22px;border-radius:16px;
+    border:1px solid var(--line);
+    background:rgba(255,255,255,0.03);
+    transition:transform .2s ease, background .2s ease;
+    cursor:default;
+  }
+  .rarity-chip:hover{transform:translateY(-6px);background:rgba(255,255,255,0.06);}
+  .rarity-chip .swatch{width:36px;height:36px;border-radius:10px;margin-bottom:14px;}
+  .rarity-chip h3{font-size:1.1rem;font-family:'Inter',sans-serif;font-weight:800;}
+  .rarity-chip p{font-size:0.8rem;color:rgba(246,243,236,0.6);margin-top:6px;}
+
+  /* ---------- PACK OPENER ---------- */
+  .pack-section{
+    background:radial-gradient(circle at 50% 0%, rgba(255,110,10,0.12), transparent 60%);
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    text-align:center;
+  }
+  .pack-wrap{display:flex;flex-direction:column;align-items:center;gap:30px;}
+  .pack{
+    width:220px;height:300px;border-radius:14px;
+    background:
+      repeating-linear-gradient(45deg, rgba(255,255,255,0.06) 0 2px, transparent 2px 10px),
+      linear-gradient(160deg, var(--hardwood), #a34a00 60%, #5c2900);
+    box-shadow:0 25px 50px -15px rgba(0,0,0,0.6);
+    display:flex;align-items:center;justify-content:center;
+    position:relative;
+    transition:transform .3s ease, box-shadow .3s ease;
+  }
+  .pack:hover{transform:translateY(-8px) rotate(-2deg);}
+  .pack.opening{animation:shake .45s ease;}
+  @keyframes shake{
+    0%,100%{transform:translate(0,0) rotate(0)}
+    20%{transform:translate(-4px,0) rotate(-3deg)}
+    40%{transform:translate(4px,0) rotate(3deg)}
+    60%{transform:translate(-3px,0) rotate(-2deg)}
+    80%{transform:translate(3px,0) rotate(2deg)}
+  }
+  .pack-label{
+    font-family:'Anton',sans-serif;color:#fff;font-size:1.4rem;
+    text-shadow:0 2px 6px rgba(0,0,0,0.5);text-align:center;
+  }
+  .pack-label small{display:block;font-family:'Inter',sans-serif;font-size:0.7rem;font-weight:700;opacity:0.85;margin-top:6px;}
+
+  .reveal-card{
+    width:230px;height:320px;border-radius:16px;
+    display:none;flex-direction:column;justify-content:space-between;padding:16px;
+    position:relative;overflow:hidden;
+    box-shadow:0 30px 60px -15px rgba(0,0,0,0.7);
+  }
+  .reveal-card.show{display:flex;animation:pop-in .5s cubic-bezier(.2,1.4,.4,1);}
+  @keyframes pop-in{0%{transform:scale(0.3) rotate(-8deg);opacity:0}70%{transform:scale(1.08) rotate(2deg);opacity:1}100%{transform:scale(1) rotate(0)}}
+  .reveal-card .rname{font-family:'Anton',sans-serif;font-size:1.5rem;color:#fff;text-shadow:0 2px 6px rgba(0,0,0,0.5);}
+  .reveal-card .rrarity{font-size:0.7rem;font-weight:800;color:#fff;background:rgba(0,0,0,0.35);padding:4px 10px;border-radius:999px;align-self:flex-start;}
+  .reveal-card .remoji{font-size:5.5rem;text-align:center;flex:1;display:flex;align-items:center;justify-content:center;}
+
+  #confetti-canvas{position:fixed;inset:0;pointer-events:none;z-index:200;}
+
+  /* ---------- SHOP GRID ---------- */
+  .filters{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:40px;}
+  .filter-btn{
+    padding:9px 18px;border-radius:999px;border:1px solid var(--line);
+    background:transparent;color:var(--paper);font-weight:600;font-size:0.85rem;
+    transition:all .2s ease;
+  }
+  .filter-btn.active,.filter-btn:hover{background:var(--hardwood);border-color:var(--hardwood);color:var(--ink);}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:22px;}
+  .product{
+    border-radius:16px;border:1px solid var(--line);
+    background:rgba(255,255,255,0.03);
+    padding:18px;position:relative;overflow:hidden;
+    transition:transform .25s ease, box-shadow .25s ease;
+  }
+  .product:hover{transform:translateY(-6px);box-shadow:0 20px 40px -15px rgba(0,0,0,0.5);}
+  .product .tag{
+    position:absolute;top:14px;right:14px;font-size:0.65rem;font-weight:800;
+    padding:4px 9px;border-radius:999px;color:var(--ink);
+  }
+  .product .thumb{
+    height:150px;border-radius:12px;margin-bottom:14px;
+    display:flex;align-items:center;justify-content:center;font-size:3.4rem;
+    position:relative;overflow:hidden;
+  }
+  .product .thumb::after{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.35) 45%, transparent 60%);
+    background-size:250% 250%;background-position:130% 0;
+    transition:background-position .6s ease;
+  }
+  .product:hover .thumb::after{background-position:-30% 0;}
+  .product h3{font-size:1.05rem;font-family:'Inter',sans-serif;font-weight:800;}
+  .product .sub{font-size:0.78rem;color:rgba(246,243,236,0.55);margin-top:2px;}
+  .product .price-row{display:flex;align-items:center;justify-content:space-between;margin-top:16px;}
+  .product .price{font-family:'Anton',sans-serif;font-size:1.3rem;color:var(--gold);}
+  .add-btn{
+    background:var(--paper);color:var(--ink);border:none;
+    width:38px;height:38px;border-radius:10px;font-size:1.2rem;font-weight:800;
+    transition:transform .15s ease, background .15s ease;
+  }
+  .add-btn:hover{background:var(--hardwood);transform:rotate(90deg);}
+  .add-btn.added{background:#3ddc84;}
+
+  /* ---------- MARQUEE ---------- */
+  .marquee{
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:20px 0;overflow:hidden;white-space:nowrap;
+    background:rgba(255,255,255,0.02);
+  }
+  .marquee-track{display:inline-block;animation:scroll-left 22s linear infinite;font-family:'Anton',sans-serif;font-size:1.4rem;color:rgba(246,243,236,0.35);}
+  .marquee-track span{margin:0 26px;}
+  .marquee-track span.hot{color:var(--hardwood-light);}
+  @keyframes scroll-left{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+  /* ---------- TESTIMONIALS FLIP ---------- */
+  .test-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;}
+  .test-card{
+    perspective:1000px;height:190px;
+  }
+  .test-inner{
+    position:relative;width:100%;height:100%;transform-style:preserve-3d;
+    transition:transform .6s cubic-bezier(.4,.2,.2,1);
+  }
+  .test-card:hover .test-inner{transform:rotateY(180deg);}
+  .test-front,.test-back{
+    position:absolute;inset:0;border-radius:16px;padding:22px;
+    backface-visibility:hidden;border:1px solid var(--line);
+    display:flex;flex-direction:column;justify-content:center;
+  }
+  .test-front{background:rgba(255,255,255,0.03);}
+  .test-back{
+    background:linear-gradient(150deg,var(--holo-purple),var(--holo-pink));
+    transform:rotateY(180deg);color:#fff;
+  }
+  .test-front .stars{color:var(--gold);letter-spacing:3px;margin-bottom:10px;}
+  .test-front p{font-size:0.9rem;color:rgba(246,243,236,0.75);}
+  .test-front .who{margin-top:14px;font-weight:700;font-size:0.85rem;}
+  .test-back p{font-size:0.85rem;line-height:1.5;}
+
+  /* ---------- NEWSLETTER ---------- */
+  .newsletter{
+    text-align:center;border-radius:24px;
+    background:linear-gradient(135deg, var(--holo-purple), var(--holo-pink) 50%, var(--hardwood));
+    padding:70px 5vw;position:relative;overflow:hidden;
+    margin:0 5vw;
+  }
+  .newsletter h2{font-size:clamp(2rem,4.4vw,3.2rem);color:#fff;}
+  .newsletter p{color:rgba(255,255,255,0.85);margin-top:12px;}
+  .news-form{display:flex;gap:10px;justify-content:center;margin-top:30px;flex-wrap:wrap;}
+  .news-form input{
+    padding:14px 18px;border-radius:10px;border:none;min-width:260px;font-size:0.95rem;
+  }
+  .news-form button{
+    padding:14px 26px;border-radius:10px;border:none;background:var(--ink);color:var(--gold);
+    font-weight:800;transition:transform .15s ease;
+  }
+  .news-form button:hover{transform:scale(1.05);}
+  .news-msg{margin-top:16px;font-weight:700;color:#fff;display:none;}
+  .news-msg.show{display:block;animation:pop-in .4s ease;}
+
+  footer{
+    padding:50px 5vw 30px;text-align:center;color:rgba(246,243,236,0.45);font-size:0.85rem;
+  }
+
+  /* Back to top */
+  .top-btn{
+    position:fixed;bottom:26px;right:26px;z-index:90;
+    width:50px;height:50px;border-radius:50%;border:none;
+    background:var(--hardwood);color:var(--ink);font-size:1.2rem;font-weight:800;
+    box-shadow:0 8px 20px rgba(0,0,0,0.4);
+    opacity:0;pointer-events:none;transition:opacity .3s ease, transform .2s ease;
+  }
+  .top-btn.show{opacity:1;pointer-events:auto;}
+  .top-btn:hover{transform:translateY(-4px);}
+
+  /* Modal */
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(5,8,20,0.75);backdrop-filter:blur(4px);
+    display:none;align-items:center;justify-content:center;z-index:300;padding:20px;
+  }
+  .modal-overlay.show{display:flex;}
+  .modal{
+    background:var(--court-navy-2);border:1px solid var(--line);border-radius:20px;
+    max-width:420px;width:100%;padding:30px;position:relative;
+    animation:pop-in .35s ease;
+  }
+  .modal-close{
+    position:absolute;top:16px;right:16px;background:none;border:none;color:var(--paper);
+    font-size:1.4rem;
+  }
+  .modal .mthumb{height:180px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:4rem;margin-bottom:18px;}
+  .modal h3{font-size:1.4rem;}
+  .modal .sub{color:rgba(246,243,236,0.55);font-size:0.85rem;margin-top:4px;}
+  .modal p.desc{margin-top:14px;font-size:0.9rem;color:rgba(246,243,236,0.75);line-height:1.55;}
+  .modal .mprice{font-family:'Anton',sans-serif;font-size:1.6rem;color:var(--gold);margin-top:18px;}
+
+  @media (max-width:880px){
+    .hero{grid-template-columns:1fr;text-align:center;padding-top:50px;}
+    .hero p{margin-left:auto;margin-right:auto;}
+    .stat-row{justify-content:center;}
+    .nav-links{display:none;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important;transition:none !important;}
+  }
+</style>
+</head>
+<body>
+<div class="court-bg"></div>
+<canvas id="confetti-canvas"></canvas>
+
+<nav>
+  <div class="logo"><span class="ball"></span>HARDWOOD HITS</div>
+  <div class="nav-links">
+    <a href="#rarity">Rarities</a>
+    <a href="#pack">Open a Pack</a>
+    <a href="#shop">Shop</a>
+    <a href="#reviews">Reviews</a>
+  </div>
+  <button class="cart-btn" id="cartBtn">🏀 Cart <span class="cart-count" id="cartCount">0</span></button>
+</nav>
+
+<section class="hero">
+  <div>
+    <div class="hero-eyebrow"><span class="dot"></span>NEW DROPS EVERY FRIDAY</div>
+    <h1>Chase the <span class="grad">holo</span>.<br>Own the <span class="grad">history</span>.</h1>
+    <p>Rookie autos, refractors, and vintage rebounds — hand-picked basketball cards for collectors who chase the chase. Every pack ships in a hard case, guaranteed.</p>
+    <div class="hero-ctas">
+      <button class="btn-primary" onclick="document.getElementById('shop').scrollIntoView()">Shop the Collection</button>
+      <button class="btn-ghost" onclick="document.getElementById('pack').scrollIntoView()">Open a Free Pack</button>
+    </div>
+    <div class="stat-row">
+      <div class="stat"><b>48K+</b><span>Cards graded</span></div>
+      <div class="stat"><b>1-of-1s</b><span>Found monthly</span></div>
+      <div class="stat"><b>4.9★</b><span>Collector rating</span></div>
+    </div>
+  </div>
+  <div class="card-stage">
+    <div>
+      <div class="hero-card" id="tiltCard">
+        <div class="hero-card-face">
+          <div class="hero-card-top"><span>#23</span><span>HOLO</span></div>
+          <div class="hero-card-mid">🏀</div>
+          <div class="hero-card-bottom">
+            <div class="name">J. THUNDER</div>
+            <div class="meta">Point Guard · Rookie Refractor</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-card-hint">move your mouse over the card ↑</div>
+    </div>
+  </div>
+</section>
+
+<div class="marquee">
+  <div class="marquee-track">
+    <span>ROOKIE AUTOS</span><span class="hot">★ NOW RESTOCKED</span><span>REFRACTORS</span><span>VINTAGE ROOKIES</span><span class="hot">★ 1-OF-1 ALERT</span><span>GRADED PSA 10s</span><span>PATCH CARDS</span><span class="hot">★ FREE PACK DAILY</span>
+    <span>ROOKIE AUTOS</span><span class="hot">★ NOW RESTOCKED</span><span>REFRACTORS</span><span>VINTAGE ROOKIES</span><span class="hot">★ 1-OF-1 ALERT</span><span>GRADED PSA 10s</span><span>PATCH CARDS</span><span class="hot">★ FREE PACK DAILY</span>
+  </div>
+</div>
+
+<section id="rarity">
+  <div class="section-head">
+    <h2>Know your rarity tiers</h2>
+    <p>Every card is graded on a color-coded scale so you always know exactly what you're chasing.</p>
+  </div>
+  <div class="rarity-strip">
+    <div class="rarity-chip"><div class="swatch" style="background:#9aa0a6"></div><h3>Base</h3><p>Common set fillers. Great for team collectors.</p></div>
+    <div class="rarity-chip"><div class="swatch" style="background:#3ddc84"></div><h3>Refractor</h3><p>Shiny parallel prints, numbered to 500.</p></div>
+    <div class="rarity-chip"><div class="swatch" style="background:#00e5ff"></div><h3>Rookie Auto</h3><p>On-card signatures from a player's debut season.</p></div>
+    <div class="rarity-chip"><div class="swatch" style="background:#8a3ffc"></div><h3>Patch</h3><p>Game-worn jersey swatch embedded in the card.</p></div>
+    <div class="rarity-chip"><div class="swatch" style="background:var(--gold)"></div><h3>Gold /10</h3><p>Ultra low print run, serial numbered.</p></div>
+    <div class="rarity-chip"><div class="swatch" style="background:var(--holo-pink)"></div><h3>1-of-1</h3><p>Exactly one exists. The chase of a lifetime.</p></div>
+  </div>
+</section>
+
+<section class="pack-section" id="pack">
+  <div class="section-head">
+    <h2>Open a free pack</h2>
+    <p>Click the pack. See what you pull. No purchase, no catch — just the rush.</p>
+  </div>
+  <div class="pack-wrap">
+    <div class="pack" id="packEl" onclick="openPack()">
+      <div class="pack-label">TAP TO<br>OPEN<small>1 CARD INSIDE</small></div>
+    </div>
+    <div class="reveal-card" id="revealCard">
+      <div class="rrarity" id="revealRarity">RARE</div>
+      <div class="remoji" id="revealEmoji">🏀</div>
+      <div>
+        <div class="rname" id="revealName">Player Name</div>
+      </div>
+    </div>
+    <button class="btn-ghost" id="pullAgainBtn" style="display:none" onclick="openPack()">Pull Again</button>
+  </div>
+</section>
+
+<section id="shop">
+  <div class="section-head">
+    <h2>Shop the collection</h2>
+    <p>Filter by rarity, add your favorites, and build your box.</p>
+  </div>
+  <div class="filters" id="filters">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="base">Base</button>
+    <button class="filter-btn" data-filter="refractor">Refractor</button>
+    <button class="filter-btn" data-filter="auto">Rookie Auto</button>
+    <button class="filter-btn" data-filter="patch">Patch</button>
+    <button class="filter-btn" data-filter="grail">Grail</button>
+  </div>
+  <div class="grid" id="productGrid"></div>
+</section>
+
+<section id="reviews">
+  <div class="section-head">
+    <h2>Collectors talk</h2>
+    <p>Hover a card to flip it.</p>
+  </div>
+  <div class="test-grid">
+    <div class="test-card"><div class="test-inner">
+      <div class="test-front"><div class="stars">★★★★★</div><p>"Pulled a rookie patch on my first pack. Packaging was mint, arrived in two days."</p><div class="who">— Marcus D.</div></div>
+      <div class="test-back"><p>Marcus has been collecting since 2016 and rates Hardwood Hits the most consistent break he's found online.</p></div>
+    </div></div>
+    <div class="test-card"><div class="test-inner">
+      <div class="test-front"><div class="stars">★★★★★</div><p>"The rarity tiers actually match what shows up. No inflated 'rare' base cards here."</p><div class="who">— Priya S.</div></div>
+      <div class="test-back"><p>Priya runs a grading spreadsheet for her whole collection and says the descriptions are always accurate.</p></div>
+    </div></div>
+    <div class="test-card"><div class="test-inner">
+      <div class="test-front"><div class="stars">★★★★★</div><p>"Free daily pack feature is dangerously fun. I check it every morning with coffee."</p><div class="who">— Jonah K.</div></div>
+      <div class="test-back"><p>Jonah started as a casual fan and now has a full binder of rookie refractors from the site.</p></div>
+    </div></div>
+  </div>
+</section>
+
+<section>
+  <div class="newsletter">
+    <h2>Get first pick on new drops</h2>
+    <p>Join 12,000+ collectors — new arrivals hit your inbox before they hit the shop.</p>
+    <form class="news-form" onsubmit="return subscribe(event)">
+      <input type="email" placeholder="you@email.com" required>
+      <button type="submit">Notify Me</button>
+    </form>
+    <div class="news-msg" id="newsMsg">You're on the list. First pack's on us. 🏀</div>
+  </div>
+</section>
+
+<footer>
+  © 2026 Hardwood Hits. A demo storefront built for fun — not a real card shop.
+</footer>
+
+<button class="top-btn" id="topBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this) closeModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="mthumb" id="modalThumb">🏀</div>
+    <h3 id="modalName">Card Name</h3>
+    <div class="sub" id="modalSub">Position · Set</div>
+    <p class="desc" id="modalDesc">Description goes here.</p>
+    <div class="mprice" id="modalPrice">$0</div>
+  </div>
+</div>
+
+<script>
+/* ---------- DATA ---------- */
+const products = [
+  {name:"J. Thunder Rookie Auto", cat:"auto", price:189, emoji:"🏀", grad:"linear-gradient(160deg,#00e5ff,#0b1229)", tag:"AUTO", tagColor:"#00e5ff", sub:"Point Guard · 2026 Debut", desc:"On-card rookie autograph, numbered to 99. Debut season standout."},
+  {name:"K. Solomon Refractor", cat:"refractor", price:64, emoji:"✨", grad:"linear-gradient(160deg,#3ddc84,#0b1229)", tag:"REFRACT", tagColor:"#3ddc84", sub:"Shooting Guard · Prizm", desc:"Prismatic refractor parallel, numbered to 249. Mirror-sharp finish."},
+  {name:"M. Vega Base Set", cat:"base", price:8, emoji:"🃏", grad:"linear-gradient(160deg,#9aa0a6,#0b1229)", tag:"BASE", tagColor:"#9aa0a6", sub:"Small Forward · Team Set", desc:"Classic base card, perfect for team collectors and set builders."},
+  {name:"A. Reyes Patch Card", cat:"patch", price:112, emoji:"🧵", grad:"linear-gradient(160deg,#8a3ffc,#0b1229)", tag:"PATCH", tagColor:"#8a3ffc", sub:"Center · Game Worn", desc:"Dual-color jersey swatch, pulled from a nationally televised game."},
+  {name:"D. Okafor Gold /10", cat:"grail", price:410, emoji:"🏆", grad:"linear-gradient(160deg,#ffd23f,#0b1229)", tag:"GOLD", tagColor:"#ffd23f", sub:"Power Forward · Gold Parallel", desc:"Ultra-scarce gold parallel, hand-numbered to just 10 copies worldwide."},
+  {name:"T. Blackwood 1-of-1", cat:"grail", price:1250, emoji:"💎", grad:"linear-gradient(160deg,#ff2e9f,#0b1229)", tag:"1/1", tagColor:"#ff2e9f", sub:"Small Forward · Superfractor", desc:"The only copy in existence. Serial-stamped and independently authenticated."},
+  {name:"R. Nakamura Refractor", cat:"refractor", price:71, emoji:"✨", grad:"linear-gradient(160deg,#3ddc84,#0b1229)", tag:"REFRACT", tagColor:"#3ddc84", sub:"Point Guard · Prizm", desc:"Bold color-shift refractor with sharp corners, numbered to 199."},
+  {name:"E. Marsh Rookie Auto", cat:"auto", price:225, emoji:"🏀", grad:"linear-gradient(160deg,#00e5ff,#0b1229)", tag:"AUTO", tagColor:"#00e5ff", sub:"Shooting Guard · Debut", desc:"Clean on-card signature from a top-five draft pick's rookie season."},
+  {name:"C. Diallo Base Set", cat:"base", price:6, emoji:"🃏", grad:"linear-gradient(160deg,#9aa0a6,#0b1229)", tag:"BASE", tagColor:"#9aa0a6", sub:"Center · Team Set", desc:"Sharp-corner base issue, ideal for starting a rookie run."},
+  {name:"S. Whitfield Patch", cat:"patch", price:98, emoji:"🧵", grad:"linear-gradient(160deg,#8a3ffc,#0b1229)", tag:"PATCH", tagColor:"#8a3ffc", sub:"Forward · Game Worn", desc:"Single-color patch with vivid team-tone swatch, low print run."},
+  {name:"L. Torres Gold /10", cat:"grail", price:365, emoji:"🏆", grad:"linear-gradient(160deg,#ffd23f,#0b1229)", tag:"GOLD", tagColor:"#ffd23f", sub:"Guard · Gold Parallel", desc:"Hand-numbered gold parallel from a breakout sophomore campaign."},
+  {name:"N. Osei Refractor", cat:"refractor", price:58, emoji:"✨", grad:"linear-gradient(160deg,#3ddc84,#0b1229)", tag:"REFRACT", tagColor:"#3ddc84", sub:"Forward · Prizm", desc:"Bright refractor parallel with excellent centering, numbered to 299."}
+];
+
+const packPool = [
+  {name:"Base Filler", rarity:"BASE", emoji:"🃏", weight:45, bg:"linear-gradient(160deg,#9aa0a6,#0b1229)"},
+  {name:"Shiny Refractor", rarity:"REFRACTOR", emoji:"✨", weight:28, bg:"linear-gradient(160deg,#3ddc84,#0b1229)"},
+  {name:"Rookie Auto", rarity:"ROOKIE AUTO", emoji:"🏀", weight:14, bg:"linear-gradient(160deg,#00e5ff,#0b1229)"},
+  {name:"Jersey Patch", rarity:"PATCH", emoji:"🧵", weight:8, bg:"linear-gradient(160deg,#8a3ffc,#0b1229)"},
+  {name:"Gold /10", rarity:"GOLD /10", emoji:"🏆", weight:4, bg:"linear-gradient(160deg,#ffd23f,#0b1229)"},
+  {name:"1-of-1 Superfractor", rarity:"1-OF-1", emoji:"💎", weight:1, bg:"linear-gradient(160deg,#ff2e9f,#0b1229)"}
+];
+
+let cartCount = 0;
+
+/* ---------- CART ---------- */
+function bumpCart(){
+  cartCount++;
+  const el = document.getElementById('cartCount');
+  el.textContent = cartCount;
+  el.classList.remove('pop');
+  void el.offsetWidth;
+  el.classList.add('pop');
+}
+document.getElementById('cartBtn').addEventListener('click', ()=>{
+  alert("Cart demo — you have " + cartCount + " item(s). This is a showcase site, checkout isn't wired up.");
+});
+
+/* ---------- HERO CARD TILT ---------- */
+const tiltCard = document.getElementById('tiltCard');
+const stage = tiltCard.parentElement.parentElement;
+stage.addEventListener('mousemove', (e)=>{
+  const r = tiltCard.getBoundingClientRect();
+  const x = (e.clientX - r.left) / r.width - 0.5;
+  const y = (e.clientY - r.top) / r.height - 0.5;
+  tiltCard.style.transform = `rotateY(${x*28}deg) rotateX(${-y*28}deg) scale(1.04)`;
+});
+stage.addEventListener('mouseleave', ()=>{
+  tiltCard.style.transform = 'rotateY(0) rotateX(0) scale(1)';
+});
+
+/* ---------- PACK OPENING ---------- */
+function weightedPick(pool){
+  const total = pool.reduce((s,p)=>s+p.weight,0);
+  let r = Math.random()*total;
+  for(const p of pool){
+    if(r < p.weight) return p;
+    r -= p.weight;
+  }
+  return pool[0];
+}
+const playerFirstNames = ["Jaylen","Marcus","Devon","Elias","Cole","Amari","Theo","Zion","Kai","Rashad"];
+const playerLastNames = ["Winters","Hale","Brooks","Vance","Castillo","Odom","Mercer","Blake","Rowe","Sanders"];
+
+function openPack(){
+  const packEl = document.getElementById('packEl');
+  const reveal = document.getElementById('revealCard');
+  const pullBtn = document.getElementById('pullAgainBtn');
+  reveal.classList.remove('show');
+  packEl.classList.remove('opening');
+  void packEl.offsetWidth;
+  packEl.classList.add('opening');
+
+  setTimeout(()=>{
+    const pick = weightedPick(packPool);
+    const fname = playerFirstNames[Math.floor(Math.random()*playerFirstNames.length)];
+    const lname = playerLastNames[Math.floor(Math.random()*playerLastNames.length)];
+    document.getElementById('revealName').textContent = fname[0]+". "+lname;
+    document.getElementById('revealRarity').textContent = pick.rarity;
+    document.getElementById('revealEmoji').textContent = pick.emoji;
+    reveal.style.background = pick.bg;
+    reveal.classList.add('show');
+    pullBtn.style.display = 'inline-block';
+    if(pick.weight <= 8){
+      launchConfetti();
+    }
+  }, 420);
+}
+
+/* ---------- CONFETTI ---------- */
+const canvas = document.getElementById('confetti-canvas');
+const ctx = canvas.getContext('2d');
+function resizeCanvas(){canvas.width = innerWidth; canvas.height = innerHeight;}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+const confColors = ['#ff2e9f','#00e5ff','#ffd23f','#8a3ffc','#e8710a'];
+function launchConfetti(){
+  const pieces = Array.from({length:120}, ()=>({
+    x: canvas.width/2 + (Math.random()-0.5)*200,
+    y: canvas.height*0.35,
+    vx: (Math.random()-0.5)*10,
+    vy: Math.random()*-10 - 4,
+    size: Math.random()*8+4,
+    color: confColors[Math.floor(Math.random()*confColors.length)],
+    rot: Math.random()*360,
+    vrot: (Math.random()-0.5)*20,
+    life: 0
+  }));
+  let frame = 0;
+  function tick(){
+    frame++;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    let alive = false;
+    pieces.forEach(p=>{
+      p.vy += 0.35;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rot += p.vrot;
+      p.life++;
+      if(p.y < canvas.height+20) alive = true;
+      ctx.save();
+      ctx.translate(p.x,p.y);
+      ctx.rotate(p.rot*Math.PI/180);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size*0.6);
+      ctx.restore();
+    });
+    if(alive && frame < 260){
+      requestAnimationFrame(tick);
+    } else {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+    }
+  }
+  tick();
+}
+
+/* ---------- PRODUCT GRID ---------- */
+const grid = document.getElementById('productGrid');
+function renderGrid(filter){
+  grid.innerHTML = '';
+  products.filter(p => filter==='all' || p.cat===filter).forEach((p, i)=>{
+    const card = document.createElement('div');
+    card.className = 'product';
+    card.innerHTML = `
+      <span class="tag" style="background:${p.tagColor}">${p.tag}</span>
+      <div class="thumb" style="background:${p.grad}">${p.emoji}</div>
+      <h3>${p.name}</h3>
+      <div class="sub">${p.sub}</div>
+      <div class="price-row">
+        <span class="price">$${p.price}</span>
+        <button class="add-btn" title="Add to cart">+</button>
+      </div>
+    `;
+    card.querySelector('.thumb').addEventListener('click', ()=> openModal(p));
+    card.querySelector('h3').addEventListener('click', ()=> openModal(p));
+    const addBtn = card.querySelector('.add-btn');
+    addBtn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      bumpCart();
+      addBtn.textContent = '✓';
+      addBtn.classList.add('added');
+      setTimeout(()=>{addBtn.textContent='+'; addBtn.classList.remove('added');}, 900);
+    });
+    grid.appendChild(card);
+  });
+}
+renderGrid('all');
+
+document.querySelectorAll('.filter-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    renderGrid(btn.dataset.filter);
+  });
+});
+
+/* ---------- MODAL ---------- */
+function openModal(p){
+  document.getElementById('modalThumb').style.background = p.grad;
+  document.getElementById('modalThumb').textContent = p.emoji;
+  document.getElementById('modalName').textContent = p.name;
+  document.getElementById('modalSub').textContent = p.sub;
+  document.getElementById('modalDesc').textContent = p.desc;
+  document.getElementById('modalPrice').textContent = '$'+p.price;
+  document.getElementById('modalOverlay').classList.add('show');
+}
+function closeModal(){
+  document.getElementById('modalOverlay').classList.remove('show');
+}
+
+/* ---------- NEWSLETTER ---------- */
+function subscribe(e){
+  e.preventDefault();
+  document.getElementById('newsMsg').classList.add('show');
+  e.target.reset();
+  return false;
+}
+
+/* ---------- BACK TO TOP ---------- */
+window.addEventListener('scroll', ()=>{
+  document.getElementById('topBtn').classList.toggle('show', window.scrollY > 600);
+});
+</script>
+</body>
+</html>
